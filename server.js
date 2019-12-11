@@ -59,7 +59,45 @@ app.get("/scrape", function (req, res) {
         res.send("Scrape Complete")
     });
 
-})
+});
+
+app.get("/articles", function(req, res) {
+    db.Article.find({}).limit(10)
+    .then(function(dbArticles){
+        res.json(dbArticles);
+    })
+    .catch(function(err) {
+        res.json(err);
+    })
+});
+
+app.get("/articles/:id", function(req, res) {
+    db.Article.findOne({ _id: req.params.id })
+      .populate("comment")
+      .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err);
+      });
+  });
+
+  app.post("/articles/:id", function(req, res) {
+      db.Comment.create(req.body)
+      .then(function(dbComment) {
+          return db.Article.findOneAndUpdate({ _id: req.params.id }), { comment:dbComment.id }, {new: true};
+      })
+      .then(function(dbArticle) {
+          res.json(dbArticle)
+      })
+      .catch(function(err) {
+          res.json(err);
+      })
+  })
+  
+  
+
+
 
 // Start the server
 app.listen(PORT, function () {
