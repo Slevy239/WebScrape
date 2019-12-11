@@ -1,7 +1,8 @@
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
-var bodyParser = require("body-parser")
+var bodyParser = require("body-parser");
+var path = require("path");
 
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
@@ -17,6 +18,14 @@ var PORT = 3000;
 // Initialize Express
 var app = express();
 
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({
+    defaultLayout: "main",
+    partialsDir: path.join(__dirname, "/views/layouts/partials")
+}));
+app.set("view engine", "handlebars");
+
 // Configure middleware
 
 // Use morgan logger for logging requests
@@ -25,8 +34,7 @@ app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
-app.use(express.static("public"));
-
+app.use(express.static(__dirname + "public"));
 app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
 app.use(bodyParser.json()); // Send JSON responses
 
@@ -60,6 +68,16 @@ app.get("/scrape", function (req, res) {
     });
 
 });
+
+app.get("/", function(req, res) {
+    db.Article.find({}, function(err, data) {
+        var hbsObject = {
+            article: data
+        };
+        console.log(hbsObject);
+        res.render("home", hbsObject);
+    })
+})
 
 app.get("/articles", function(req, res) {
     db.Article.find({}).limit(10)
