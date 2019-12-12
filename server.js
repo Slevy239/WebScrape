@@ -41,20 +41,27 @@ app.use(bodyParser.json()); // Send JSON responses
 
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/FlyersDb", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/NYTdb", { useNewUrlParser: true });
 
 
 app.get("/scrape", function (req, res) {
 
-    axios.get("https://www.espn.com/nhl/team/_/name/phi").then(function (response) {
+    axios.get("https://www.nytimes.com/section/sports").then(function (response) {
         var $ = cheerio.load(response.data);
-        $("article a").each(function (i, element) {
+        $("article").each(function (i, element) {
             var result = {};
 
-            result.title = $(element).attr("aria-label");
-            result.summary = $(element).children("span").text();
-            result.link = "https://www.espn.com/" + $(this).attr("href");
-            // result.img = $(element).children().attr("src")
+
+            summary = ""
+            if ($(this).find("ul").length) {
+              summary = $(this).find("li").first().text();
+            } else {
+              summary = $(this).find("p").text();
+            };
+
+            result.title = $(this).find("h2").text();
+            result.summary =summary;
+            result.link = "https://www.nytimes.com" + $(this).find("a").attr("href");
 
             db.Article.create(result)
                 .then(function (dbArticles) {
@@ -69,7 +76,7 @@ app.get("/scrape", function (req, res) {
     });
 
 });
-
+//FIND ALL
 app.get("/", function (req, res) {
     db.Article.find({}, function (err, data) {
         var hbsObject = {
@@ -80,6 +87,7 @@ app.get("/", function (req, res) {
     })
 })
 
+//DISPLAY SAVED 
 app.get("/saved", function (req, res) {
     db.Article.find({
         "saved": true
@@ -102,6 +110,7 @@ app.get("/articles", function (req, res) {
         })
 });
 
+//POPULATE COMMENTS
 app.get("/articles/:id", function (req, res) {
     db.Article.findOne({ "_id": req.params.id })
         .populate("comment")
@@ -113,6 +122,8 @@ app.get("/articles/:id", function (req, res) {
         });
 });
 
+
+//SAVE ARTICLE
 app.post("/articles/save/:id", function (req, res) {
     db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": true }).exec(function (err, doc) {
         if (err) {
@@ -135,26 +146,34 @@ app.post("/articles/delete/:id", function (req, res) {
 
 //CREATE A NEW NOTE
 app.post("/comments/save/:id", function (req, res) {
-    var newComment = new Comment({
-        body: req.body.text,
-        article: req.params.id
-    });
-    console.log(req.body)
-    newComment.save(function (err, comment) {
-        if (err) {
-            console.log(err)
-        } else {
-            db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { "comments": comment } }).exec(function (err) {
-                if (err) {
-                    console.log(err)
-                    res.send(err)
-                } else {
-                    res.send(comment)
-                }
-            })
-        }
+    db.Comment.create(req.body).then(function(dbComment) {
+        return db.Article.findOneAndUpdate({ _id: req.params.id}, {comment: dbComment._id}, {new: true});
+    }).then(function(dbArticle){
+        res.json(dbArticle);
+    }).catch(function(err) {
+        res.json(err);
     })
 })
+//     var newComment = new Comment({
+//         body: req.body.text,
+//         article: req.params.id
+//     });
+//     console.log(req.body)
+//     newComment.save(function (err, comment) {
+//         if (err) {
+//             console.log(err)
+//         } else {
+//             db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { "comments": comment } }).exec(function (err) {
+//                 if (err) {
+//                     console.log(err)
+//                     res.send(err)
+//                 } else {
+//                     res.send(comment)
+//                 }
+//             })
+//         }
+//     })
+// })
 
 
 

@@ -18,7 +18,7 @@
     <!--CSS Style Sheet-->
     {{!-- <link rel="stylesheet" href="/assets/css/style.css" type="text/css" /> --}}
 
-    <title>Philadelphia Flyers News</title>
+    <title>Top News in Sports</title>
 </head>
 
 <body>
@@ -26,7 +26,7 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">
-                    News of The Philadelphia Flyers
+                    Sports News
                 </a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
@@ -44,57 +44,56 @@
 </body>
 <script>
     //Handle Scrape button
-$("#scrape").on("click", function() {
-  $.ajax({
-      method: "GET",
-      url: "/scrape",
-  }).done(function(data) {
-      console.log(data)
-      window.location = "/"
-  })
-});
+    $("#scrape").on("click", function () {
+        $.ajax({
+            method: "GET",
+            url: "/scrape",
+        }).done(function (data) {
+            console.log(data)
+            window.location = "/"
+        })
+    });
 
-//Set clicked nav option to active
-$(".navbar-nav li").click(function() {
- $(".navbar-nav li").removeClass("active");
- $(this).addClass("active");
-});
+    //Set clicked nav option to active
+    $(".navbar-nav li").click(function () {
+        $(".navbar-nav li").removeClass("active");
+        $(this).addClass("active");
+    });
 
-//Handle Save Article button
-$(".save").on("click", function() {
-  var thisId = $(this).attr("data-id");
-  $.ajax({
-      method: "POST",
-      url: "/articles/save/" + thisId
-  }).done(function(data) {
-      window.location = "/"
-  })
-});
+    //Handle Save Article button
+    $(".save").on("click", function () {
+        var thisId = $(this).attr("data-id");
+        alert("Article Saved!")
+        $.ajax({
+            method: "POST",
+            url: "/articles/save/" + thisId
+        }).done(function (data) {
+            window.location = "/"
+        })
+    });
 
-//Handle Delete Article button
-$(".delete").on("click", function() {
-  var thisId = $(this).attr("data-id");
-  $.ajax({
-      method: "POST",
-      url: "/articles/delete/" + thisId
-  }).done(function(data) {
-      window.location = "/saved"
-  })
-});
+    //Handle Delete Article button
+    $(".delete").on("click", function () {
+        var thisId = $(this).attr("data-id");
+        $.ajax({
+            method: "POST",
+            url: "/articles/delete/" + thisId
+        }).done(function (data) {
+            window.location = "/saved"
+        })
+    });
 
-//Handle Save Note button
-$(".saveNote").on("click", function() {
-  var thisId = $(this).attr("data-id");
-  if (!$("#noteText" + thisId).val()) {
-      alert("please enter a note to save")
-  }else {
-    $.ajax({
-          method: "POST",
-          url: "/notes/save/" + thisId,
-          data: {
-            text: $("#noteText" + thisId).val()
-          }
-        }).done(function(data) {
+    //Handle Save Note button
+    $("button.btn.btn-success.saveComment").on("click", function () {
+        var thisId = $(this).attr("data-id");
+        console.log($("#commentInput").val())
+        $.ajax({
+            method: "POST",
+            url: "/comments/save/" + thisId,
+            data: {
+                text: $("#commentInput" + thisId).val()
+            }
+        }).done(function (data) {
             // Log the response
             console.log(data);
             // Empty the notes section
@@ -102,21 +101,22 @@ $(".saveNote").on("click", function() {
             $(".modalNote").modal("hide");
             window.location = "/saved"
         });
-  }
-});
+        //  }
+    });
 
-//Handle Delete Note button
-$(".deleteNote").on("click", function() {
-  var noteId = $(this).attr("data-note-id");
-  var articleId = $(this).attr("data-article-id");
-  $.ajax({
-      method: "DELETE",
-      url: "/notes/delete/" + noteId + "/" + articleId
-  }).done(function(data) {
-      console.log(data)
-      $(".modalNote").modal("hide");
-      window.location = "/saved"
-  })
-});
+    //Handle Delete Note button
+    $(".deleteNote").on("click", function () {
+        var noteId = $(this).attr("data-note-id");
+        var articleId = $(this).attr("data-article-id");
+        $.ajax({
+            method: "DELETE",
+            url: "/notes/delete/" + noteId + "/" + articleId
+        }).done(function (data) {
+            console.log(data)
+            $(".modalNote").modal("hide");
+            window.location = "/saved"
+        })
+    });
 </script>
+
 </html>
