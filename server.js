@@ -51,7 +51,8 @@ app.get("/scrape", function (req, res) {
         $("article a").each(function (i, element) {
             var result = {};
 
-            result.title = $(element).attr("aria-label")
+            result.title = $(element).attr("aria-label");
+            result.summary = $(element).children("span").text();
             result.link = "https://www.espn.com/" + $(this).attr("href");
             // result.img = $(element).children().attr("src")
 
@@ -69,8 +70,8 @@ app.get("/scrape", function (req, res) {
 
 });
 
-app.get("/", function(req, res) {
-    db.Article.find({}, function(err, data) {
+app.get("/", function (req, res) {
+    db.Article.find({}, function (err, data) {
         var hbsObject = {
             article: data
         };
@@ -79,41 +80,83 @@ app.get("/", function(req, res) {
     })
 })
 
-app.get("/articles", function(req, res) {
-    db.Article.find({}).limit(10)
-    .then(function(dbArticles){
-        res.json(dbArticles);
+app.get("/saved", function (req, res) {
+    db.Article.find({
+        "saved": true
+    }).populate("comments").exec(function (error, articles) {
+        var hbsObject = {
+            article: articles
+        };
+        res.render("saved", hbsObject);
+
     })
-    .catch(function(err) {
-        res.json(err);
+})
+
+app.get("/articles", function (req, res) {
+    db.Article.find({}).limit(10)
+        .then(function (dbArticles) {
+            res.json(dbArticles);
+        })
+        .catch(function (err) {
+            res.json(err);
+        })
+});
+
+app.get("/articles/:id", function (req, res) {
+    db.Article.findOne({ "_id": req.params.id })
+        .populate("comment")
+        .then(function (dbArticle) {
+            res.json(dbArticle);
+        })
+        .catch(function (err) {
+            res.json(err);
+        });
+});
+
+app.post("/articles/save/:id", function (req, res) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": true }).exec(function (err, doc) {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(doc)
+        }
+    })
+})
+//DELETE ARTICLE FROM SAVED
+app.post("/articles/delete/:id", function (req, res) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": false, "notes": [] }).exec(function (err, doc) {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(doc);
+        }
     })
 });
 
-app.get("/articles/:id", function(req, res) {
-    db.Article.findOne({ _id: req.params.id })
-      .populate("comment")
-      .then(function(dbArticle) {
-        res.json(dbArticle);
-      })
-      .catch(function(err) {
-        res.json(err);
-      });
-  });
+//CREATE A NEW NOTE
+app.post("/comments/save/:id", function (req, res) {
+    var newComment = new Comment({
+        body: req.body.text,
+        article: req.params.id
+    });
+    console.log(req.body)
+    newComment.save(function (err, comment) {
+        if (err) {
+            console.log(err)
+        } else {
+            db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { "comments": comment } }).exec(function (err) {
+                if (err) {
+                    console.log(err)
+                    res.send(err)
+                } else {
+                    res.send(comment)
+                }
+            })
+        }
+    })
+})
 
-  app.post("/articles/:id", function(req, res) {
-      db.Comment.create(req.body)
-      .then(function(dbComment) {
-          return db.Article.findOneAndUpdate({ _id: req.params.id }), { comment:dbComment.id }, {new: true};
-      })
-      .then(function(dbArticle) {
-          res.json(dbArticle)
-      })
-      .catch(function(err) {
-          res.json(err);
-      })
-  })
-  
-  
+
 
 
 

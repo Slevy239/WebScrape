@@ -13,10 +13,24 @@ var ArticleSchema = new Schema({
     required: true
   },
 
+  summary: {
+    type: String,
+  },
+
   link: {
     type: String,
     required: true
   },
+
+  saved: {
+    type: Boolean,
+    default: false
+  },
+
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
+  }]
 
 
 });
