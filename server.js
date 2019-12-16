@@ -42,8 +42,9 @@ app.use(bodyParser.json()); // Send JSON responses
 
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/NYTdb", { useNewUrlParser: true });
-var MONGOD_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-mongoose.connect(MONGOD_URI);
+
+// var MONGOD_URI = process.env.MONGODB_URI || "mongodb://<dbuser>:<dbpassword>@ds253418.mlab.com:53418/heroku_hgvtnwvt";
+// mongoose.connect(MONGOD_URI);
 
 app.get("/scrape", function (req, res) {
 
@@ -75,9 +76,10 @@ app.get("/scrape", function (req, res) {
         // console.log(result);
         res.send("Scrape Complete")
     });
-
 });
-//FIND ALL
+
+
+//FIND ALL AND DISPLAY AT ROOT
 app.get("/", function (req, res) {
     db.Article.find({}, function (err, data) {
         var hbsObject = {
@@ -101,6 +103,7 @@ app.get("/saved", function (req, res) {
     })
 })
 
+//FIND FIRST 10 ARTICLES IN DB
 app.get("/articles", function (req, res) {
     db.Article.find({}).limit(10)
         .then(function (dbArticles) {
@@ -134,6 +137,7 @@ app.post("/articles/save/:id", function (req, res) {
         }
     })
 })
+
 //DELETE ARTICLE FROM SAVED
 app.post("/articles/delete/:id", function (req, res) {
     db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": false, "notes": [] }).exec(function (err, doc) {
@@ -146,36 +150,15 @@ app.post("/articles/delete/:id", function (req, res) {
 });
 
 //CREATE A NEW NOTE
-app.post("/comments/save/:id", function (req, res) {
+app.post("/comments/:id", function (req, res) {
     db.Comment.create(req.body).then(function(dbComment) {
-        return db.Article.findOneAndUpdate({ _id: req.params.id}, {comment: dbComment._id}, {new: true});
+        return db.Article.findOneAndUpdate({ _id: req.params.id}, {$push: {comments: dbComment._id}}, {new: true});
     }).then(function(dbArticle){
-        res.json(dbArticle);
+        res.send(dbArticle);
     }).catch(function(err) {
         res.json(err);
     })
 })
-//     var newComment = new Comment({
-//         body: req.body.text,
-//         article: req.params.id
-//     });
-//     console.log(req.body)
-//     newComment.save(function (err, comment) {
-//         if (err) {
-//             console.log(err)
-//         } else {
-//             db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { "comments": comment } }).exec(function (err) {
-//                 if (err) {
-//                     console.log(err)
-//                     res.send(err)
-//                 } else {
-//                     res.send(comment)
-//                 }
-//             })
-//         }
-//     })
-// })
-
 
 
 

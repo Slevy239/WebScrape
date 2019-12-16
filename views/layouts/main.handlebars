@@ -83,26 +83,30 @@
         })
     });
 
-    //Handle Save Note button
-    $("button.btn.btn-success.saveComment").on("click", function () {
+    //Handle Save comment button
+    $(".saveComment").on("click", function () {
         var thisId = $(this).attr("data-id");
-        console.log($("#commentInput").val())
-        $.ajax({
-            method: "POST",
-            url: "/comments/save/" + thisId,
-            data: {
-                text: $("#commentInput" + thisId).val()
-            }
-        }).done(function (data) {
-            // Log the response
-            console.log(data);
-            // Empty the notes section
-            $("#noteText" + thisId).val("");
-            $(".modalNote").modal("hide");
-            window.location = "/saved"
-        });
-        //  }
+        if (!$("#commentInput").val()) {
+            alert("please enter a comment to save")
+        } else {
+            console.log($("#commentInput").val())
+            $.ajax({
+                method: "POST",
+                url: "/comments/" + thisId,
+                data: {
+                    body: $("#commentInput").val()
+                }
+            }).done(function (data) {
+                // Log the response
+                console.log(data);
+                // Empty the notes section
+                $("#noteText" + thisId).val("");
+                $(".modalNote").modal("hide");
+                window.location = "/saved"
+            });
+        }
     });
+
 
     //Handle Delete Note button
     $(".deleteNote").on("click", function () {
