@@ -18,16 +18,18 @@ var PORT = 3000;
 // Initialize Express
 var app = express();
 
-// Make public a static folder
-app.use(express.static(__dirname + '/public'));
-
+// Set Handlebars.
 var exphbs = require("express-handlebars");
 
 
-app.engine("handlebars", exphbs({
-    defaultLayout: "main",
-    partialsDir: path.join(__dirname, "/views/layouts/partials")
-}));
+// Make public a static folder
+app.use(express.static("public"));
+
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+
 app.set("view engine", "handlebars");
 
 // Configure middleware
@@ -40,7 +42,6 @@ app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
 app.use(bodyParser.json()); // Send JSON responses
-
 
 
 // Connect to the Mongo DB
