@@ -26,8 +26,14 @@ var exphbs = require("express-handlebars");
 app.use(express.static("public"));
 
 
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
+// initalize express-handlebars
+app.engine(
+    "handlebars",
+    exphbs({
+        defaultLayout: "main",
+        partialsDir: path.join(__dirname, "/views/layouts/partials")
+    })
+);app.set("view engine", "handlebars");
 
 
 app.set("view engine", "handlebars");
@@ -158,7 +164,7 @@ app.post("/articles/delete/:id", function (req, res) {
 //CREATE A NEW COMMENT
 app.post("/comments/:id", function (req, res) {
     db.Comment.create(req.body).then(function(dbComment) {
-        return db.Article.findOneAndUpdate({ _id: req.params.id}, {$push: {comments: dbComment._id}}, {new: true});
+        return db.Article.findOneAndUpdate({ _id: req.params.id}, {$push: {"comments": dbComment._id}}, {new: true});
     }).then(function(dbArticle){
         res.json(dbArticle);
     }).catch(function(err) {

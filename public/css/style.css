@@ -1,0 +1,15 @@
+body {
+    background-image: url(../images/aerial-view-of-sports-stadium-during-daytime-139762.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+a {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+button#scrape {
+    margin-top: 10px;
+}
+a.navbar-brand {
+    color: black;
+}

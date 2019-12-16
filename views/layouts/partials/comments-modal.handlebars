@@ -11,16 +11,26 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
-          <textarea name="input" id="commentInput" class="form-control" rows="5"></textarea>
-        </form>
-        {{#if comments}}
-        {{#each comments}}
-        {{this.title}}
+        {{#if this.comments}}
+        {{#each this.comments}}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <p>{{this.link}}</p>
+            <button type="button" class="btn btn-danger deleteNote" data-note-id={{this._id}}
+              data-article-id={{this.article}}>X</button>
+          </div>
+        </div>
         {{/each}}
         {{else}}
-        <p>Be the first to Comment!</p>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>Be the first to comment on this article!</h4>
+          </div>
+        </div>
         {{/if}}
+        <div class="form-group">
+          <textarea name="input" id="commentInput" class="form-control" rows="5"></textarea>
+        </div>
 
       </div>
       <div class="modal-footer">
