@@ -15,8 +15,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
-    <!--CSS Style Sheet-->
-    {{!-- <link rel="stylesheet" href="/assets/css/style.css" type="text/css" /> --}}
+        <link rel="stylesheet" href="../../assets/css/style.css">
 
     <title>Top News in Sports</title>
 </head>
@@ -24,17 +23,20 @@
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">
-                    Sports News
-                </a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/saved">Saved Articles</a></li>
-                    <li><button type="button" class="btn btn-primary" id="scrape">Scrape Articles</button></li>
-                </ul>
+            <div class="row">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">
+                        Sports News
+                    </a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/saved">Saved Articles</a></li>
+                        <li> <button type="button" class="btn btn-primary" id="scrape">Scrape
+                                Articles</button></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -122,5 +124,7 @@
         })
     });
 </script>
+
+
 
 </html>

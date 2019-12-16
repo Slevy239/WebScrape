@@ -18,7 +18,11 @@ var PORT = 3000;
 // Initialize Express
 var app = express();
 
+// Make public a static folder
+app.use(express.static(__dirname + '/public'));
+
 var exphbs = require("express-handlebars");
+
 
 app.engine("handlebars", exphbs({
     defaultLayout: "main",
@@ -33,8 +37,7 @@ app.use(logger("dev"));
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// Make public a static folder
-app.use(express.static(__dirname + "public"));
+
 app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
 app.use(bodyParser.json()); // Send JSON responses
 
@@ -117,9 +120,9 @@ app.get("/articles", function (req, res) {
 //POPULATE COMMENTS
 app.get("/articles/:id", function (req, res) {
     db.Article.findOne({ "_id": req.params.id })
-        .populate("comment")
+        .populate("comments")
         .then(function (dbArticle) {
-            res.json(dbArticle);
+            res.redner("comments", {comments : body});
         })
         .catch(function (err) {
             res.json(err);
@@ -129,32 +132,34 @@ app.get("/articles/:id", function (req, res) {
 
 //SAVE ARTICLE
 app.post("/articles/save/:id", function (req, res) {
-    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": true }).exec(function (err, doc) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": true })
+    .then(function (err, dbArticle) {
         if (err) {
             console.log(err)
         } else {
-            res.send(doc)
+            res.send(dbArticle)
         }
     })
 })
 
 //DELETE ARTICLE FROM SAVED
 app.post("/articles/delete/:id", function (req, res) {
-    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": false, "notes": [] }).exec(function (err, doc) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": false, "notes": [] })
+    .exec(function (err, dbArticle) {
         if (err) {
             console.log(err)
         } else {
-            res.send(doc);
+            res.send(dbArticle);
         }
     })
 });
 
-//CREATE A NEW NOTE
+//CREATE A NEW COMMENT
 app.post("/comments/:id", function (req, res) {
     db.Comment.create(req.body).then(function(dbComment) {
         return db.Article.findOneAndUpdate({ _id: req.params.id}, {$push: {comments: dbComment._id}}, {new: true});
     }).then(function(dbArticle){
-        res.send(dbArticle);
+        res.json(dbArticle);
     }).catch(function(err) {
         res.json(err);
     })

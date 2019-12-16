@@ -14,16 +14,14 @@
         <form>
           <textarea name="input" id="commentInput" class="form-control" rows="5"></textarea>
         </form>
-        {{#if this.comments}}
-        {{#each this.comments}}
-        <p>{{this.body}}</p>
+        {{#if comments}}
+        {{#each comments}}
+        {{this.title}}
         {{/each}}
         {{else}}
-        <br>
-        <div class="text-center">
-          <p>Be The First to Comment</p>
-        </div>
+        <p>Be the first to Comment!</p>
         {{/if}}
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success saveComment">Save changes</button>
