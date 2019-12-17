@@ -10,7 +10,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id={{this.id}}>
         {{#if this.comments}}
         {{#each this.comments}}
         <div class="panel panel-default">
@@ -29,12 +29,12 @@
         </div>
         {{/if}}
         <div class="form-group">
-          <textarea name="input" id="commentInput" class="form-control" rows="5"></textarea>
+          <textarea name="input" placeholder="Make a Comment" id="commentText{{this._id}}" class="form-control new-comment{{this.id}}" rows="5"></textarea>
         </div>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success saveComment">Save changes</button>
+        <button type="button" data-id={{this._id}} class="btn btn-success saveComment">Save changes</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
