@@ -13,3 +13,6 @@ button#scrape {
 a.navbar-brand {
     color: black;
 }
+.row.text-center {
+    word-wrap: break-word;
+}
