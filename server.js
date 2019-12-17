@@ -52,8 +52,16 @@ app.use(bodyParser.json()); // Send JSON responses
 
 // Connect to the Mongo DB
 // mongoose.connect("mongodb://localhost/NYTdb", { useNewUrlParser: true });
-const MONGOD_URI = process.env.MONGOD_URI || "mongodb://user2:password1@ds111648.mlab.com:11648/heroku_cgsdbdp0";
-mongoose.connect(MONGOD_URI);
+mongoose.Promise = global.Promise;
+mongoose.connect(
+  
+    process.env.MONGOD_URI || "mongodb://user2:password1@ds111648.mlab.com:11648/heroku_cgsdbdp0",
+    {
+        userMongoClient : true
+    }
+);
+
+// mongoose.connect(MONGOD_URI);
 
 
 app.get("/scrape", function (req, res) {
