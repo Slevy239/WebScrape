@@ -41,20 +41,35 @@ $(".delete").on("click", function () {
 //Handle Save comment button
 $(".saveComment").on("click", function () {
     let id = $(this).attr("data-id");
+    let text = $("#commentText"+id).val();
+    $.ajax({
+        method: "POST",
+        url: "/saved/comments/"+id,
+        data: {
+            comment: text
+        }
+    }).done(function(data){
+        console.log(data)
+    })
+})
+    let id = $(this).attr("data-id");
     let commentText = $("#commentText" + id).val();
     console.log(commentText)
     $.ajax({
         method: "POST",
         url: "/saved/comments/" + id,
+        // text inside the note modal
         data: {
-            // text inside the note modal
-            comments: $("#commentText" + id).val()
+            comment: $("#commentText" + id).val()
         }
-    }).then(function (data) {
+
+    }).done(function (data) {
         // window.location = "/saved"
         console.log(data)
     })
 });
+
+
 
 
 
