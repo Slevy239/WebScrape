@@ -57,7 +57,7 @@ mongoose.connect(
   
     process.env.MONGOD_URI || "mongodb://user2:password1@ds111648.mlab.com:11648/heroku_cgsdbdp0",
     {
-        userMongoClient : true
+        useMongoClient : true
     }
 );
 
