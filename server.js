@@ -52,9 +52,9 @@ app.use(bodyParser.json()); // Send JSON responses
 
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/NYTdb", { useNewUrlParser: true });
+const MONGOD_URI = process.env.MONGOD_URI || "mongodb://localhost/NYTdb";
+mongoose.connect(MONGOD_URI);
 
-// var MONGOD_URI = process.env.MONGODB_URI || "mongodb://<dbuser>:<dbpassword>@ds253418.mlab.com:53418/heroku_hgvtnwvt";
-// mongoose.connect(MONGOD_URI);
 
 app.get("/scrape", function (req, res) {
 
