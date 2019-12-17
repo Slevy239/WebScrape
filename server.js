@@ -145,7 +145,6 @@ app.get("/saved/comments/:id", function (req, res) {
 
 //SAVE ARTICLE
 app.post("/articles/save/:id", function (req, res) {
-
     db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": true })
         .then(function (err, dbArticle) {
             if (err) {
