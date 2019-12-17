@@ -33,7 +33,7 @@ app.engine(
         defaultLayout: "main",
         partialsDir: path.join(__dirname, "/views/layouts/partials")
     })
-);app.set("view engine", "handlebars");
+); app.set("view engine", "handlebars");
 
 
 app.set("view engine", "handlebars");
@@ -66,13 +66,13 @@ app.get("/scrape", function (req, res) {
 
             summary = ""
             if ($(this).find("ul").length) {
-              summary = $(this).find("li").first().text();
+                summary = $(this).find("li").first().text();
             } else {
-              summary = $(this).find("p").text();
+                summary = $(this).find("p").text();
             };
 
             result.title = $(this).find("h2").text();
-            result.summary =summary;
+            result.summary = summary;
             result.link = "https://www.nytimes.com" + $(this).find("a").attr("href");
 
             db.Article.create(result)
@@ -129,7 +129,7 @@ app.get("/articles/:id", function (req, res) {
     db.Article.findOne({ "_id": req.params.id })
         .populate("comments")
         .then(function (dbArticle) {
-            res.redner("comments", {comments : body});
+            res.render("comments", { comments: body });
         })
         .catch(function (err) {
             res.json(err);
@@ -140,36 +140,47 @@ app.get("/articles/:id", function (req, res) {
 //SAVE ARTICLE
 app.post("/articles/save/:id", function (req, res) {
     db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": true })
-    .then(function (err, dbArticle) {
-        if (err) {
-            console.log(err)
-        } else {
-            res.send(dbArticle)
-        }
-    })
+        .then(function (err, dbArticle) {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(dbArticle)
+            }
+        })
 })
 
 //DELETE ARTICLE FROM SAVED
 app.post("/articles/delete/:id", function (req, res) {
     db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": false, "notes": [] })
-    .exec(function (err, dbArticle) {
-        if (err) {
-            console.log(err)
-        } else {
-            res.send(dbArticle);
-        }
-    })
+        .exec(function (err, dbArticle) {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(dbArticle);
+            }
+        })
 });
 
 //CREATE A NEW COMMENT
-app.post("/comments/:id", function (req, res) {
-    db.Comment.create(req.body).then(function(dbComment) {
-        return db.Article.findOneAndUpdate({ _id: req.params.id}, {$push: {"comments": dbComment._id}}, {new: true});
+app.post("/saved/comments/:id", function(req, res){
+
+    console.log('article id:' +req.params.id);
+    db.Comment.create(req.body).then(function(dbComment){
+
+        // find id inside of Article collection and push the associated comments into the Article
+        return db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {comment: dbComment._id}}, {new: true});
+        
+
     }).then(function(dbArticle){
+
         res.json(dbArticle);
-    }).catch(function(err) {
-        res.json(err);
-    })
+
+    }).catch(function(err){
+        if(err) {
+            res.json(err);
+        }
+    });
+
 })
 
 

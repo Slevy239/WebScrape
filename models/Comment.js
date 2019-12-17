@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema ({
     // tite: String,
-    body: String
+    comment: String,
 });
 
 var Comment = mongoose.model("Comment", CommentSchema);

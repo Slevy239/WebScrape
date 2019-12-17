@@ -27,11 +27,12 @@ var ArticleSchema = new Schema({
     default: false
   },
 
-  comments: [{
+  comment: [
+    {
     type: Schema.Types.ObjectId,
     ref: "Comment"
-  }]
-
+    }
+]
 
 });
 
