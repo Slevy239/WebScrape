@@ -14,10 +14,11 @@
         {{#if this.comments}}
         {{#each this.comments}}
         <div class="panel panel-default">
-          <div class="panel-body">
-            <p>{{this.link}}</p>
-            <button type="button" class="btn btn-danger deleteNote" data-note-id={{this._id}}
-              data-article-id={{this.article}}>X</button>
+          <div class="panel-body" id="modalBody">
+            <div class="row text-center" data-id={{this.id}}>
+              <p>{{this.comment}}</p>
+            </div>
+            <button type="button" class="btn btn-danger deleteComment" data-id={{this._id}}>X</button>
           </div>
         </div>
         {{/each}}
@@ -29,7 +30,8 @@
         </div>
         {{/if}}
         <div class="form-group">
-          <textarea name="input" placeholder="Make a Comment" id="commentText{{this._id}}" class="form-control new-comment{{this.id}}" rows="5"></textarea>
+          <textarea name="input" placeholder="Make a Comment" id="commentText{{this._id}}"
+            class="form-control new-comment{{this.id}}" rows="5"></textarea>
         </div>
 
       </div>

@@ -50,39 +50,24 @@ $(".saveComment").on("click", function () {
         }
     }).done(function(data){
         console.log(data)
+        window.location = "/saved"
     })
 })
-    let id = $(this).attr("data-id");
-    let commentText = $("#commentText" + id).val();
-    console.log(commentText)
-    $.ajax({
-        method: "POST",
-        url: "/saved/comments/" + id,
-        // text inside the note modal
-        data: {
-            comment: $("#commentText" + id).val()
-        }
 
+
+
+
+
+
+
+//DELETE COMMENT FROM MODAL
+$(".deleteComment").on("click", function () {
+    var id = $(this).attr("data-id");
+    $.ajax({
+        method: "GET",
+        url: "delete/comments/" + id
     }).done(function (data) {
-        // window.location = "/saved"
         console.log(data)
+        window.location = "/saved"
     })
 });
-
-
-
-
-
-// //Handle Delete Note button
-// $(".deleteNote").on("click", function () {
-//     var noteId = $(this).attr("data-note-id");
-//     var articleId = $(this).attr("data-article-id");
-//     $.ajax({
-//         method: "DELETE",
-//         url: "/notes/delete/" + noteId + "/" + articleId
-//     }).done(function (data) {
-//         console.log(data)
-//         $(".modalNote").modal("hide");
-//         window.location = "/saved"
-//     })
-// });

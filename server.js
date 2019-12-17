@@ -152,7 +152,7 @@ app.post("/articles/save/:id", function (req, res) {
 
 //DELETE ARTICLE FROM SAVED
 app.post("/articles/delete/:id", function (req, res) {
-    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": false, "notes": [] })
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { "saved": false, "comments": [] })
         .exec(function (err, dbArticle) {
             if (err) {
                 console.log(err)
@@ -175,6 +175,14 @@ app.post("/saved/comments/:id", function(req, res){
         }
     });
 })
+
+//DELETE COMMENT FROM MODAL
+app.get("/delete/comments/:id", function(req, res){
+    db.Comment.remove({_id: req.params.id}).then(function(response){
+        console.log(response)
+        res.json(response);
+    })
+});
 
 
 
