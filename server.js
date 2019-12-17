@@ -125,9 +125,9 @@ app.get("/articles", function (req, res) {
 });
 
 //POPULATE COMMENTS
-app.get("/articles/:id", function (req, res) {
-    db.Article.findOne({ "_id": req.params.id })
-        .populate("comment")
+app.get("/saved/comments/:id", function (req, res) {
+    db.Article.findOne({ _id: req.params.id })
+        .populate("comments")
         .then(function (comments) {
             res.send(comments);
         })
@@ -163,16 +163,17 @@ app.post("/articles/delete/:id", function (req, res) {
 });
 
 //CREATE A NEW COMMENT
-app.post("/saved/comments/:id", function (req, res) {
-    db.Comment.create(req.body)
-        .then(function (dbComment) {
-            return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { "comment": dbComment._id } }, { new: true });
-        })
-        .then(function (dbArticle) {
-            res.json(dbArticle);
-        }).catch(function (err) {
+app.post("/saved/comments/:id", function(req, res){
+    db.Comment.create(req.body).then(function(dbNote){
+        // find id inside of Article collection and push the associated notes into the Article
+        return db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {comments: dbNote._id}}, {new: true});
+    }).then(function(dbArticle){
+        res.json(dbArticle);
+    }).catch(function(err){
+        if(err) {
             res.json(err);
-        })
+        }
+    });
 })
 
 

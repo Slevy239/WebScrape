@@ -19,7 +19,7 @@ var ArticleSchema = new Schema({
 
   link: {
     type: String,
-    required: false
+    required: true
   },
 
   saved: {
@@ -27,7 +27,7 @@ var ArticleSchema = new Schema({
     default: false
   },
 
-  comment: [
+  comments: [
     {
     type: Schema.Types.ObjectId,
     ref: "Comment"
