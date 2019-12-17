@@ -51,8 +51,8 @@ app.use(bodyParser.json()); // Send JSON responses
 
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/NYTdb", { useNewUrlParser: true });
-const MONGOD_URI = process.env.MONGOD_URI || "mongodb://user1:4@7dcDMNHCVstds@ds111648.mlab.com:11648/heroku_cgsdbdp0";
+// mongoose.connect("mongodb://localhost/NYTdb", { useNewUrlParser: true });
+const MONGOD_URI = process.env.MONGOD_URI || "mongodb://user2:password1@ds111648.mlab.com:11648/heroku_cgsdbdp0";
 mongoose.connect(MONGOD_URI);
 
 
