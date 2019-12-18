@@ -54,10 +54,9 @@ app.use(bodyParser.json()); // Send JSON responses
 // mongoose.connect("mongodb://localhost/NYTdb", { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 mongoose.connect(
-  
-    process.env.MONGOD_URI 
-    //  "mongodb://user2:password1@ds111648.mlab.com:11648/heroku_cgsdbdp0",
-  
+
+    process.env.MONGOD_URI || "mongodb://user2:password1@ds111648.mlab.com:11648/heroku_cgsdbdp0",
+
 );
 
 
@@ -168,22 +167,22 @@ app.post("/articles/delete/:id", function (req, res) {
 });
 
 //CREATE A NEW COMMENT
-app.post("/saved/comments/:id", function(req, res){
-    db.Comment.create(req.body).then(function(dbNote){
+app.post("/saved/comments/:id", function (req, res) {
+    db.Comment.create(req.body).then(function (dbNote) {
         // find id inside of Article collection and push the associated comments into the Article
-        return db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {comments: dbNote._id}}, {new: true});
-    }).then(function(dbArticle){
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { comments: dbNote._id } }, { new: true });
+    }).then(function (dbArticle) {
         res.json(dbArticle);
-    }).catch(function(err){
-        if(err) {
+    }).catch(function (err) {
+        if (err) {
             res.json(err);
         }
     });
 })
 
 //DELETE COMMENT FROM MODAL
-app.get("/delete/comments/:id", function(req, res){
-    db.Comment.remove({_id: req.params.id}).then(function(response){
+app.get("/delete/comments/:id", function (req, res) {
+    db.Comment.remove({ _id: req.params.id }).then(function (response) {
         console.log(response)
         res.json(response);
     })
