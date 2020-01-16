@@ -1,4 +1,4 @@
-//Handle Scrape button
+    //Handle Scrape button
 $("#scrape").on("click", function () {
     $.ajax({
         method: "GET",

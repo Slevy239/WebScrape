@@ -1,4 +1,5 @@
 # WebScrape
+Deployed Heroku link: (https://github.com/Slevy239/WebScrape)
 
 ## Technologies used
 
